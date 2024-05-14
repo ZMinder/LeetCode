@@ -2,6 +2,7 @@ package P2201_2300.P2241_2250;
 
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,22 +13,25 @@ import java.util.Map;
  */
 public class P2244 {
     public int minimumRounds(int[] tasks) {
-        HashMap<Integer, Integer> numsMap = new HashMap<>();
-        for (int i = 0; i < tasks.length; i++) {//统计每个数出现的次数
-            Integer def = numsMap.getOrDefault(tasks[i], 0);
-            numsMap.put(tasks[i], def + 1);
-        }
+        Arrays.sort(tasks);//根据难度降序排序
+        int nums = 1;//记录每个难度任务的数量
         int res = 0;
-        for (Map.Entry<Integer, Integer> entry : numsMap.entrySet()) {
-            int num = entry.getValue();//当前数出现的次数
-            int ans = cal(num);
-            if (ans == -1) {//当前难度任务无法完成返回-1
-                return ans;
-            } else {//加上完成当前难度任务的轮数
+        for (int i = 1; i < tasks.length; i++) {
+            if(tasks[i] != tasks[i - 1]){//当前面一个难度任务数量统计结束 计算轮数
+                int ans = cal(nums);
+                if(ans == -1){//如果轮数为-1 说明完不成
+                    return -1;
+                }
                 res += ans;
+                nums = 0;//统计下一难度任务数量
             }
+            nums++;//统计相同难度任务的数量
         }
-        return res;
+        int ans = cal(nums);//计算最后一个难度需要的轮数
+        if(ans == -1){
+            return -1;
+        }
+        return res + ans;
     }
 
     public int cal(int num) {
@@ -45,7 +49,7 @@ public class P2244 {
 
     @Test
     public void testConvertToArray() {
-        String str = "[2,3,3]";
+        String str = "[2,2,3,3,2,4,4,4,4,4]";
         str = str.replace('[', '{');
         str = str.replace(']', '}');
         System.out.println(str);
@@ -53,7 +57,7 @@ public class P2244 {
 
     @Test
     public void test() {
-        int[] tasks = {2, 3, 3};
+        int[] tasks = {2,2,3,3,2,4,4,4,4,4};
         System.out.println(minimumRounds(tasks));
     }
 }
