@@ -32,16 +32,12 @@ public class P2244 {
 
     public int cal(int num) {
         int round = num / 3;//优先每轮完成三个任务
-        num %= 3;//剩余的任务每轮完成两个
-        while (num % 2 != 0 && num < 6 && round > 0) {
-            //每轮完成两个不能实现 并且剩余任务数小于2和3的最小公倍数（否则会出现死循环）
-            // 减少完成三个任务的轮数
-            num += 3;
-            round--;
-        }
-        if (num % 2 == 0) {//剩余的任务经过处理可以每轮完成2个最终完成所有
-            round += num / 2;
-            return round;
+        num %= 3;//剩余的任务每轮完成两个 num此时取值范围{0,1,2}
+        if (num == 0 || num == 2) {
+            return round + num / 2;
+        } else if (round > 0) {//此时num=1 可以减少一轮完成三个任务
+            // round-1,num+3,round+2->round+1
+            return round + 1;
         } else {
             return -1;
         }
