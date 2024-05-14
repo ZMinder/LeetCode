@@ -28,7 +28,7 @@ public class P37 {
             for (int j = 0; j < board.length; j++) {
                 if (board[i][j] == '.') {//当前位置需要填充字符
                     for (int k = 0; k < board.length; k++) {//可以填充的字符
-                        if (!cols[j][k] && !rows[i][k] && block[i / 3][j / 3][k]) {
+                        if (!cols[j][k] && !rows[i][k] && !block[i / 3][j / 3][k]) {
                             //在当前行 当前列 当前九宫格均为出现 则可以填
 
                             //标记为已使用
