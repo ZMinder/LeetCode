@@ -17,23 +17,47 @@ public class P2244 {
             Integer def = numsMap.getOrDefault(tasks[i], 0);
             numsMap.put(tasks[i], def + 1);
         }
+        int res = 0;
         for (Map.Entry<Integer, Integer> entry : numsMap.entrySet()) {
-            System.out.println(entry);
+            int num = entry.getValue();//当前数出现的次数
+            int ans = cal(num);
+            if (ans == -1) {//当前难度任务无法完成返回-1
+                return ans;
+            } else {//加上完成当前难度任务的轮数
+                res += ans;
+            }
         }
-        return 0;
+        return res;
+    }
+
+    public int cal(int num) {
+        int round = num / 3;//优先每轮完成三个任务
+        num %= 3;//剩余的任务每轮完成两个
+        while (num % 2 != 0 && num < 6 && round > 0) {
+            //每轮完成两个不能实现 并且剩余任务数小于2和3的最小公倍数（否则会出现死循环）
+            // 减少完成三个任务的轮数
+            num += 3;
+            round--;
+        }
+        if (num % 2 == 0) {//剩余的任务经过处理可以每轮完成2个最终完成所有
+            round += num / 2;
+            return round;
+        } else {
+            return -1;
+        }
     }
 
     @Test
     public void testConvertToArray() {
-        String str = "[2,2,3,3,2,4,4,4,4,4]";
-        str = str.replace('[','{');
-        str = str.replace(']','}');
+        String str = "[2,3,3]";
+        str = str.replace('[', '{');
+        str = str.replace(']', '}');
         System.out.println(str);
     }
 
     @Test
     public void test() {
-        int[] tasks = {2,2,3,3,2,4,4,4,4,4};
-        minimumRounds(tasks);
+        int[] tasks = {2, 3, 3};
+        System.out.println(minimumRounds(tasks));
     }
 }
