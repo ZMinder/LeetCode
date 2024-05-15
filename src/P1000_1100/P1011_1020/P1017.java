@@ -1,8 +1,6 @@
-package P1000_P1100.P1011_1020;
+package P1000_1100.P1011_1020;
 
 import org.junit.Test;
-
-import java.util.Stack;
 
 public class P1017 {
     public String baseNeg2(int n) {
