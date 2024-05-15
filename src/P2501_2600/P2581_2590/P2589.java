@@ -24,7 +24,7 @@ public class P2589 {
 
     public int findMinimumTime(int[][] tasks) {
         Arrays.sort(tasks, new MyComparator());
-        boolean[] run = new boolean[2005];//记录每个时间点是否存在可运行的任务
+        boolean[] run = new boolean[tasks[tasks.length - 1][1] + 1];//记录每个时间点是否存在可运行的任务
         int res = 0;//最终所需要的运行时间
         for (int i = 0; i < tasks.length; i++) {
             int start = tasks[i][0];//当前任务的起始运行时间
