@@ -17,26 +17,23 @@ import java.util.Arrays;
  */
 public class P1953 {
     public long numberOfWeeks(int[] milestones) {
-        //根据项目的阶段数量升序排序 后续一个任务的所有阶段必须在前面任务的插缝中完成
-        // 例如：已经完成的项目 2 1 2 现在3项目可选的位置只有 * 2 * 1 * 2 * 四个位置 * 所在的位置
-        //为了工作周数最多要从项目的阶段小的开始 否则可能一上来插缝的缝就不够
-
-        Arrays.sort(milestones);//排序
-        int block = 0;//工作的周数（项目阶段的数量）（缝隙的数量-1）
+        int max = -1;//记录项目阶段最大值
+        long sum = 0;//记录总的阶段数量
         for (int i = 0; i < milestones.length; i++) {
-            if (milestones[i] <= block + 1) {
-                block += milestones[i];//当前项目的阶段有足够的缝隙插入 插完后 阶段数量增加}
-            } else {
-                block += (block + 1);//没有足够的缝隙插入 最多只能把当前缝隙填满 结束工作
-                break;
-            }
+            sum += milestones[i];//累加阶段数量
+            max = Math.max(max, milestones[i]);//统计阶段最大值
         }
-        return block;
+        sum -= max;//计算出去阶段数量最多的项目其余项目的阶段数量
+        if (sum < max - 1) {//其余阶段不能填满最大项目的缝隙
+            return 2 * sum + 1;//sum是最多填充的缝隙 与sum相邻的都是max
+        } else {//其余阶段能填满max的缝隙
+            return sum + max;
+        }
     }
 
     @Test
     public void testConvert() {
-        String str = "[1,2,3]";
+        String str = "[5,9,4,4,8,9,9,8,7,3]";
         str = str.replace('[', '{');
         str = str.replace(']', '}');
         System.out.println(str);
@@ -44,7 +41,7 @@ public class P1953 {
 
     @Test
     public void test() {
-        int[] milestones = {1, 2, 3};
+        int[] milestones = {5, 9, 4, 4, 8, 9, 9, 8, 7, 3};
         long res = numberOfWeeks(milestones);
         System.out.println(res);
     }
