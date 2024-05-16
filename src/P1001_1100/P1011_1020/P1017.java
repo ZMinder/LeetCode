@@ -1,4 +1,4 @@
-package P1000_1100.P1011_1020;
+package P1001_1100.P1011_1020;
 
 import org.junit.Test;
 
