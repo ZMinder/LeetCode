@@ -6,26 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class P77 {
-    List<List<Integer>> res = new ArrayList<>();
-    List<Integer> temp = new ArrayList<>();
-
     public List<List<Integer>> combine(int n, int k) {
-        dfs(1, n, k);
+        List<List<Integer>> res = new ArrayList<>();
+        dfs(res, new ArrayList<>(), k, 1, n);
         return res;
     }
 
-    public void dfs(int cur, int n, int k) {//每个数都有选和不选两种可能
-        if (temp.size() + n - cur + 1 < k) {//剩下的数凑不到k个数
+    public void dfs(List<List<Integer>> res, List<Integer> ans, int k, int from, int n) {
+        if ( n - from + 1 < k) {//剩余的数不够k-size个了
             return;
         }
-        if (temp.size() == k) {//选择了k个数
-            res.add(new ArrayList<>(temp));
+        if (k == 0) {//k==0 说明选完了k个数
+            res.add(new ArrayList<>(ans));//添加到总的组合
             return;
         }
-        temp.add(cur);//选择了当前的数
-        dfs(cur + 1, n, k);
-        temp.remove(temp.size() - 1);//不选当前的数
-        dfs(cur + 1, n, k);
+        for (int i = from; i <= n; i++) {//决定从第k个数选择哪个数
+            ans.add(i);//添加当前数字
+            dfs(res, ans, k - 1, i + 1, n);//决定 k-1 位置
+            ans.remove(ans.size() - 1);//移除当前数字
+        }
     }
 
     @Test
