@@ -13,7 +13,10 @@ public class P40 {
     }
 
     /**
-     * 一层一层的来选，第一层是组合的第一个数，第二层是组合的第二个数
+     * 组合数可以想象成树形结构，每一层代表组合数的第i个数，
+     * 下一层只能从i之后的数选取（避免了重复的组合，要求给定数组中元素不重复）
+     * 将数组排序，重复的元素同层只选取第一个，后续相同的数字同层不再选取，
+     * 但下一层可能会选取与本层相同的数（也就是同层不重复，树枝可以重复）
      */
     public void backtrace(List<List<Integer>> res, List<Integer> temp, int[] candidates,
                           int target, int begin) {
