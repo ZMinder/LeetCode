@@ -20,11 +20,19 @@ public class P131 {
 
     public boolean[][] generate(String str) {
         //记录str的子串[i,j)是否是回文子串
-        boolean[][] checked = new boolean[str.length() + 1][str.length() + 1];
-        for (int i = 0; i < str.length(); i++) {
-            for (int j = i + 1; j <= str.length(); j++) {
-                if (check(str.substring(i, j))) {
-                    checked[i][j] = true;
+        boolean[][] checked = new boolean[str.length()][str.length()];
+        //使用动态规划的方式判断是否为回文子串
+        for (int i = 0; i < str.length(); i++) {//预处理i>=j的情况 全部置为true
+            for (int j = 0; j <= i; j++) {
+                checked[i][j] = true;
+            }
+        }
+        //自下而上 自左而右
+        for (int i = str.length() - 2; i >= 0; i--) {
+            for (int j = i + 1; j < str.length(); j++) {
+                if (str.charAt(i) == str.charAt(j)) {//当首尾相同，取决于i+1~j-1
+                    //当j-i==1时，就利用到了预处理i>=j的情况 全部置为true
+                    checked[i][j] = checked[i + 1][j - 1];
                 }
             }
         }
@@ -40,7 +48,7 @@ public class P131 {
         }
         for (int i = begin; i < str.length(); i++) {//考虑前i+1个字符能否构成回文子串
             String sub = str.substring(begin, i + 1);
-            if (checked[begin][i + 1]) {//如果前i+1个字符构成回文字符串
+            if (checked[begin][i]) {//如果前i+1个字符构成回文字符串
                 temp.add(sub);
                 backtrace(str, checked, i + 1);
                 temp.remove(temp.size() - 1);
@@ -64,7 +72,7 @@ public class P131 {
 
     @Test
     public void test() {
-        String str = "a";
+        String str = "cbbbcc";
         List<List<String>> partition = partition(str);
         System.out.println(partition);
     }
