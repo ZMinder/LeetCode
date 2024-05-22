@@ -15,36 +15,25 @@ import java.util.List;
  * 你可以按 任何 顺序返回答案。
  */
 public class P93 {
+    final int POINT = 3;//点的总数
     List<String> res = new ArrayList<>();//存储有效IP地址
-    String temp = "";//记录当前IP
+    String[] temp = new String[POINT];//记录当前IP
 
     public List<String> restoreIpAddresses(String s) {
-        boolean[][] valid = generate(s);
-        backtrace(s, valid, 3, 0);
+        backtrace(s, 3, 0);
         return res;
     }
 
-
-    public boolean[][] generate(String str) {
-        boolean[][] valid = new boolean[str.length()][3];//每个字符往后三个字符构成的数是否有效
-        for (int i = 0; i < str.length(); i++) {
-            for (int j = i; j < i + 3 && j < str.length(); j++) {
-                if (check(str.substring(i, j + 1))) {
-                    valid[i][j - i] = true;
-                }
-            }
-        }
-        return valid;
-    }
-
-    public void backtrace(String str, boolean[][] valid, int cuts, int begin) {
+    public void backtrace(String str, int cuts, int begin) {
         if (cuts == 0) {//用于分割的.分割结束
             String sub = str.substring(begin);//最后一部分
-            if (valid[begin][str.length() - begin - 1]) {
-                //如果符合条件 构成一个有效IP 否则直接返回上一层
-                temp += sub;
-                res.add(temp);
-                temp = temp.substring(0, temp.length() - sub.length());
+            if (check(sub)) {//如果符合条件 构成一个有效IP 否则直接返回上一层
+                StringBuilder builder = new StringBuilder();
+                for (String s : temp) {//累积前面的整数
+                    builder.append(s + ".");
+                }
+                builder.append(sub);
+                res.add(builder.toString());
             }
             return;
         }
@@ -53,10 +42,12 @@ public class P93 {
                 continue;
             }
             String sub = str.substring(begin, i + 1);
-            if (valid[begin][i - begin]) {//判断当前整数是否有效
-                temp += sub + ".";
-                backtrace(str, valid, cuts - 1, i + 1);
-                temp = temp.substring(0, temp.length() - sub.length() - 1);
+            if (check(sub)) {//判断当前整数是否有效
+                temp[POINT - cuts] = sub;
+                backtrace(str, cuts - 1, i + 1);
+            }
+            if (str.charAt(begin) == '0' && i == begin) {//如果当前整数存在前导0 只需处理一个整数
+                break;
             }
         }
     }
@@ -71,7 +62,7 @@ public class P93 {
 
     @Test
     public void test() {
-        String str = "0000";
+        String str = "25525511135";
         List<String> list = restoreIpAddresses(str);
         System.out.println(list);
     }
