@@ -19,14 +19,29 @@ public class P93 {
     String temp = "";//记录当前IP
 
     public List<String> restoreIpAddresses(String s) {
-        backtrace(s, 3, 0);
+        boolean[][] valid = generate(s);
+        backtrace(s, valid, 3, 0);
         return res;
     }
 
-    public void backtrace(String str, int cuts, int begin) {
+
+    public boolean[][] generate(String str) {
+        boolean[][] valid = new boolean[str.length()][3];//每个字符往后三个字符构成的数是否有效
+        for (int i = 0; i < str.length(); i++) {
+            for (int j = i; j < i + 3 && j < str.length(); j++) {
+                if (check(str.substring(i, j + 1))) {
+                    valid[i][j - i] = true;
+                }
+            }
+        }
+        return valid;
+    }
+
+    public void backtrace(String str, boolean[][] valid, int cuts, int begin) {
         if (cuts == 0) {//用于分割的.分割结束
             String sub = str.substring(begin);//最后一部分
-            if (check(sub)) {//如果符合条件 构成一个有效IP 否则直接返回上一层
+            if (valid[begin][str.length() - begin - 1]) {
+                //如果符合条件 构成一个有效IP 否则直接返回上一层
                 temp += sub;
                 res.add(temp);
                 temp = temp.substring(0, temp.length() - sub.length());
@@ -38,9 +53,9 @@ public class P93 {
                 continue;
             }
             String sub = str.substring(begin, i + 1);
-            if (check(sub)) {//判断当前整数是否有效
+            if (valid[begin][i - begin]) {//判断当前整数是否有效
                 temp += sub + ".";
-                backtrace(str, cuts - 1, i + 1);
+                backtrace(str, valid, cuts - 1, i + 1);
                 temp = temp.substring(0, temp.length() - sub.length() - 1);
             }
         }
@@ -56,7 +71,7 @@ public class P93 {
 
     @Test
     public void test() {
-        String str = "101023";
+        String str = "0000";
         List<String> list = restoreIpAddresses(str);
         System.out.println(list);
     }
