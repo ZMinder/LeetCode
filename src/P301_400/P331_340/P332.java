@@ -1,6 +1,5 @@
 package P301_400.P331_340;
 
-import com.sun.source.tree.Tree;
 import org.junit.Test;
 
 import java.util.*;
@@ -16,38 +15,37 @@ import java.util.*;
  * 假定所有机票至少存在一种合理的行程。且所有的机票 必须都用一次 且 只能用一次。
  */
 public class P332 {
-    List<String> res = new ArrayList<>();//存储最终合理的行程
+    LinkedList<String> res = new LinkedList<>();//存储最终合理的行程
 
     public List<String> findItinerary(List<List<String>> tickets) {
         HashMap<String, TreeMap<String, Integer>> towards = init(tickets);
         res.add("JFK");//加入起点
-        backtrace(towards, "JFK", tickets.size());
+        backtrace(towards, tickets.size() + 1);
         return res;
     }
 
-    public boolean backtrace(HashMap<String, TreeMap<String, Integer>> towards, String start,
-                             int rest) {
-        if (rest == 0) {//无路可走
+    public boolean backtrace(HashMap<String, TreeMap<String, Integer>> towards,
+                             int target) {
+        String start = res.getLast();
+        if (res.size() == target) {//无路可走
             return true;//机票全部用完，说明找到了合理的规划，且字典序是最小的
         }
-        TreeMap<String, Integer> ends = towards.get(start);//当前起点所能到达的终点
-        if (ends == null) {
+        if (!towards.containsKey(start)) {
             return false;//死胡同
         }
+        TreeMap<String, Integer> ends = towards.get(start);//当前起点所能到达的终点
         for (Map.Entry<String, Integer> entry : ends.entrySet()) {
-            String end = entry.getKey();
             int last = entry.getValue();
             if (last <= 0) {//没有机票可用
                 continue;
             }
-            ends.put(end, last - 1);//标记当前机票已被使用
-            res.add(end);
-            boolean ans = backtrace(towards, end, rest - 1);
-            if (ans == true) {//找到了就不再继续找了
+            entry.setValue(last - 1);//标记当前机票已被使用
+            res.addLast(entry.getKey());
+            if (backtrace(towards, target)) {//找到了就不再继续找了
                 return true;
             }
-            ends.put(end, last);
-            res.remove(res.size() - 1);
+            entry.setValue(last);
+            res.removeLast();
         }
         return false;
     }
@@ -82,7 +80,7 @@ public class P332 {
 
     @Test
     public void test() {
-        String[][] list = {{"MEL","PER"},{"SYD","CBR"},{"AUA","DRW"},{"JFK","EZE"},{"PER","AXA"},{"DRW","AUA"},{"EZE","SYD"},{"AUA","MEL"},{"DRW","AUA"},{"PER","ANU"},{"CBR","EZE"},{"EZE","PER"},{"MEL","EZE"},{"EZE","MEL"},{"EZE","TBI"},{"ADL","DRW"},{"ANU","EZE"},{"AXA","ADL"}};
+        String[][] list = {{"MEL", "PER"}, {"SYD", "CBR"}, {"AUA", "DRW"}, {"JFK", "EZE"}, {"PER", "AXA"}, {"DRW", "AUA"}, {"EZE", "SYD"}, {"AUA", "MEL"}, {"DRW", "AUA"}, {"PER", "ANU"}, {"CBR", "EZE"}, {"EZE", "PER"}, {"MEL", "EZE"}, {"EZE", "MEL"}, {"EZE", "TBI"}, {"ADL", "DRW"}, {"ANU", "EZE"}, {"AXA", "ADL"}};
         List<List<String>> ans = new ArrayList<>();
         for (String[] strings : list) {
             ans.add(Arrays.asList(strings));
