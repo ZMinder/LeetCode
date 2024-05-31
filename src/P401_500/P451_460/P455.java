@@ -17,21 +17,14 @@ import java.util.PriorityQueue;
 public class P455 {
     public int findContentChildren(int[] g, int[] s) {
         Arrays.sort(g);
-        PriorityQueue<Integer> heap = new PriorityQueue<>();
-        for (int i = 0; i < s.length; i++) {
-            heap.offer(s[i]);
-        }
-        int res = 0;//记录满足孩子的数量
-        for (int i = 0; i < g.length; i++) {
-            int appetite = g[i];
-            while (!heap.isEmpty() && heap.peek() < appetite) {//找到一个大于等于胃口的饼干
-                heap.poll();
+        Arrays.sort(s);
+        int res = 0;
+        for (int i = 0, j = 0; i < g.length && j < s.length; i++, j++) {
+            while (j < s.length && g[i] > s[j]) {//找到第一个大于等于g[i]的
+                j++;
             }
-            if (!heap.isEmpty()) {//找到了
+            if (j < s.length) {//不越界
                 res++;
-                heap.poll();
-            } else {//找不到
-                break;
             }
         }
         return res;
